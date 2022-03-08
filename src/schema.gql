@@ -1,0 +1,189 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserDetailsOutput {
+  id: String!
+  username: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  gender: String!
+  role: String!
+  isTakenDown: Boolean!
+}
+
+type CommentOutput {
+  id: String!
+  comment: String!
+  authorId: String!
+  author: String!
+  createdAt: DateTime!
+  isDeleted: Boolean!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type NftOutput {
+  id: String!
+  title: String!
+  imageUrl: String!
+  description: String!
+  category: String!
+  price: Float!
+  owner: UserDetailsOutput!
+  creator: UserDetailsOutput!
+  isDeleted: Boolean!
+  isForSale: Boolean!
+  isTakenDown: Boolean!
+  comment: [CommentOutput!]!
+}
+
+type LoginOutput {
+  accessToken: String!
+}
+
+type PostCommentOutput {
+  id: String!
+  createdAt: DateTime!
+  comment: String!
+  nft: NftOutput!
+  author: UserDetailsOutput!
+  isDeleted: Boolean!
+}
+
+type SoldNftOutput {
+  id: String!
+  title: String!
+  category: String!
+  imageUrl: String!
+  description: String!
+  price: Float!
+  buyer: UserDetailsOutput!
+  seller: UserDetailsOutput!
+  balance: Float!
+}
+
+type WalletOutput {
+  walletId: String!
+  remainingBalance: Float!
+  owner: UserDetailsOutput!
+}
+
+type Query {
+  viewAllNft: [NftOutput!]!
+  viewAllUsers: [UserDetailsOutput!]!
+  login(input: LoginInput!): LoginOutput!
+  viewProfile: UserDetailsOutput!
+  viewOtherProfile(id: String!): UserDetailsOutput!
+  searchProfile(keyword: String = "", order: Float = 1, take: Float = 10, skip: Float = 0): [UserDetailsOutput!]!
+  viewUserComments(take: Float = 10, skip: Float = 0): [CommentOutput!]!
+  viewNftComments(nft: String!, take: Float = 10, skip: Float = 0): [CommentOutput!]!
+  returnUserNft(take: Float = 10, skip: Float = 0): [NftOutput!]!
+  searchNftAdvance(search: NftSearchInput!, take: Float = 10, skip: Float = 0): [NftOutput!]!
+  searchNftSimple(search: String = "", take: Float = 10, skip: Float = 0): [NftOutput!]!
+  viewNft(input: String!, take: Float = 10, skip: Float = 0): NftOutput!
+  checkBalance: WalletOutput!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input NftSearchInput {
+  owned: OwnershipEnum = All
+  title: String = ""
+  category: CategoryEnum = All
+  priceFloor: Float = 0
+  priceCeiling: Float = 99999999
+  titleOrder: OrderEnum = ASC
+  priceOrder: OrderEnum = ASC
+  dateOrder: OrderEnum = ASC
+}
+
+"""Ownership"""
+enum OwnershipEnum {
+  Owned
+  NotOwned
+  All
+}
+
+"""Category"""
+enum CategoryEnum {
+  Art
+  Music
+  Memes
+  GameObject
+  All
+}
+
+"""Order"""
+enum OrderEnum {
+  ASC
+  DESC
+}
+
+type Mutation {
+  takeDownNft(input: String!, delete: Boolean!): NftOutput!
+  takeDownUser(input: String!, delete: Boolean!): UserDetailsOutput!
+  register(input: RegisterInput!): UserDetailsOutput!
+  updateProfile(update: UpdateProfileInput!): UserDetailsOutput!
+  postComment(nft: String!, comment: CommentInput!): PostCommentOutput!
+  updateComment(commentId: String!, comment: CommentInput!): PostCommentOutput!
+  deleteComment(comment: String!, delete: Boolean!): PostCommentOutput!
+  postNft(input: NftInput!): NftOutput!
+  buyNft(input: String!): SoldNftOutput!
+  sellNft(input: String!, sell: Boolean!): NftOutput!
+  deleteNft(input: String!, delete: Boolean!): NftOutput!
+  depositBalance(balance: WalletInput!): WalletOutput!
+  withdrawBalance(balance: WalletInput!): WalletOutput!
+}
+
+input RegisterInput {
+  username: String
+  firstName: String
+  lastName: String
+  email: String
+  gender: GenderEnum
+  password: String
+  role: RoleEnum
+}
+
+"""Gender"""
+enum GenderEnum {
+  Male
+  Female
+}
+
+"""role"""
+enum RoleEnum {
+  User
+  Admin
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  email: String
+  gender: GenderEnum
+}
+
+input CommentInput {
+  comment: String!
+}
+
+input NftInput {
+  title: String!
+  imageUrl: String!
+  description: String!
+  category: CategoryEnum!
+  price: Float!
+}
+
+input WalletInput {
+  balance: Float!
+}
